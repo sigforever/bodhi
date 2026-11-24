@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="ink">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11110f" />
+  <meta name="description" content="菩提 · BODHI：一座以思源宋体筑底、极简可视化、深潜禅宗与佛学修证的桌面阅读与观照空间。" />
+  <title>菩提 · BODHI — 禅宗与佛学交互研习台</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/icon.svg" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./app/styles.css" />
+</head>
+<body>
+  <div class="grain-layer" aria-hidden="true"></div>
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="主导航">
+      <div class="sidebar-head">
+        <a class="brand" id="brand-home" href="#reader" aria-label="返回藏经精读">
+          <span class="seal" aria-hidden="true">菩提</span>
+          <span class="brand-text">
+            <span class="brand-en">BODHI</span>
+            <span class="brand-sub">觉照研习</span>
+          </span>
+        </a>
+        <button id="sidebar-toggle" class="icon-btn" type="button" title="收起侧栏" aria-label="收起侧栏">⇤</button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="研习模块">
+        <button class="nav-item is-active" data-view="reader" type="button" aria-current="page">
+          <span class="nav-idx">01</span>
+          <span class="nav-label">藏经精读</span>
+        </button>
+        <button class="nav-item" data-view="atlas" type="button">
+          <span class="nav-idx">02</span>
+          <span class="nav-label">觉悟全景</span>
+        </button>
+        <button class="nav-item" data-view="ox" type="button">
+          <span class="nav-idx">03</span>
+          <span class="nav-label">十牛图</span>
+        </button>
+        <button class="nav-item" data-view="lineage" type="button">
+          <span class="nav-idx">04</span>
+          <span class="nav-label">五家法脉</span>
+        </button>
+        <button class="nav-item" data-view="koans" type="button">
+          <span class="nav-idx">05</span>
+          <span class="nav-label">公案参究</span>
+        </button>
+        <button class="nav-item" data-view="journal" type="button">
+          <span class="nav-idx">06</span>
+          <span class="nav-label">觉照手记</span>
+        </button>
+        <button class="nav-item" data-view="stillness" type="button">
+          <span class="nav-idx">07</span>
+          <span class="nav-label">观息静室</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-tools">
+        <button id="cmd-open" class="sidebar-search-btn" type="button" aria-keyshortcuts="Control+K Meta+K">
+          <span>⌕ 全局检索</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+
+        <div class="theme-switcher" role="group" aria-label="纸墨主题切换">
+          <button class="theme-btn is-active" data-theme-value="ink" type="button">
+            <span class="theme-dot"></span><span>玄墨</span>
+          </button>
+          <button class="theme-btn" data-theme-value="xuan" type="button">
+            <span class="theme-dot"></span><span>宣纸</span>
+          </button>
+          <button class="theme-btn" data-theme-value="celadon" type="button">
+            <span class="theme-dot"></span><span>松烟青</span>
+          </button>
+        </div>
+
+        <div class="sidebar-tool-row">
+          <button id="typo-btn" class="ghost-btn" type="button">Aa · 阅读排版</button>
+        </div>
+        <div class="sidebar-foot">零依赖 · 本机保存 · 键 1–7</div>
+      </div>
+    </aside>
+
+    <!-- Right Workspace -->
+    <div class="workspace">
+      <header class="workspace-bar">
+        <div class="workspace-bar-left">
+          <button id="sidebar-open" class="sidebar-open-btn" type="button" title="展开导航栏" aria-label="展开导航栏">☰</button>
+          <div id="epigraph-next" class="epigraph-ticker" role="button" tabindex="0" title="点击换一句禅语">
+            <span id="workspace-title" class="epigraph-path">藏经精读</span>
+            <p id="epigraph-quote" class="epigraph-quote">应无所住，而生其心。</p>
+            <span id="epigraph-source" class="epigraph-source">《金刚般若波罗蜜经》</span>
+          </div>
+        </div>
+        <div id="topbar-actions">
+          <button id="topbar-cmd-btn" class="icon-btn" type="button" title="全局检索 (Ctrl+K)" aria-label="全局检索">⌕</button>
+          <button id="topbar-typo-btn" class="icon-btn" type="button" title="阅读排版设置" aria-label="阅读排版设置">Aa</button>
+        </div>
+      </header>
+
+      <main class="stage">
+        <!-- 01 · 藏经精读 (默认核心视图) -->
+        <section class="view is-active" id="view-reader" data-view-panel="reader">
+          <div class="section-head">
+            <div>
+              <span class="kicker">01 · CODEX & CONTEMPLATION</span>
+              <h1 class="section-title">藏经精读</h1>
+            </div>
+            <p class="section-lead">以思源宋体承接宋刻典籍气息，于一字一句间停驻。支持白文素读、传统竖排书卷、双视角对照与随文批注。</p>
+          </div>
+
+          <!-- Independent Toolbar (stays horizontal even in vertical scroll mode) -->
+          <div class="reader-toolbar">
+            <div class="reader-toolbar-left">
+              <button id="reader-prev" class="ghost-btn" type="button">← 上一部</button>
+              <button id="reader-next" class="ghost-btn" type="button">下一部 →</button>
+              <span class="toolbar-sep" aria-hidden="true"></span>
+              <span id="reader-progress" class="reader-progress">01 / 06</span>
+              <button id="reader-resume" class="text-btn" type="button">续读上次位置</button>
+            </div>
+            <div class="reader-toolbar-right">
+              <button id="pure-toggle" class="ghost-btn" type="button" aria-pressed="false">白文素读</button>
+              <button id="vertical-toggle" class="ghost-btn" type="button" aria-pressed="false">传统竖排</button>
+              <button id="reader-typo-btn" class="ghost-btn" type="button">Aa 排版</button>
+            </div>
+          </div>
+
+          <div class="reader-layout" id="reader-layout">
+            <aside class="book-shelf" aria-label="典籍目录">
+              <div class="book-shelf-title">典籍书架 · <span id="book-count">08 部</span></div>
+              <div id="book-list"></div>
+            </aside>
+
+            <section class="reader-canvas" id="reader-canvas" aria-label="经文画布">
+              <header class="reader-header">
+                <h2 class="reader-book-title" id="reader-title">《般若波罗蜜多心经》</h2>
+                <p class="reader-book-meta" id="reader-meta">唐 · 玄奘译 · 般若核心 · 全文精读</p>
+                <p class="margin-text" id="reader-summary" style="margin-top: 10px;"></p>
+              </header>
+              <div class="verse-list" id="verse-list"></div>
+            </section>
+
+            <aside class="margin-drawer" aria-label="旁注与随文批注">
+              <div class="margin-head">
+                <h3 class="margin-title" id="margin-heading">随文观照</h3>
+                <button id="verse-bookmark" class="icon-btn" type="button" aria-pressed="false" title="收藏此段">☆</button>
+              </div>
+              <div id="margin-content"></div>
+              <div class="verse-note-form">
+                <label class="margin-label" for="verse-note-input">这一段的私人批注（自动同步至觉照手记）</label>
+                <textarea id="verse-note-input" rows="4" placeholder="记下此刻触动、疑情或观照…"></textarea>
+                <div class="note-actions">
+                  <button id="verse-note-save" class="primary-btn" type="button">保存批注</button>
+                  <span id="verse-note-status" class="note-status">未记录</span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 02 · 觉悟全景 -->
+        <section class="view" id="view-atlas" data-view-panel="atlas">
+          <div class="section-head">
+            <div>
+              <span class="kicker">02 · ARCHITECTURE OF AWAKENING</span>
+              <h1 class="section-title">觉悟全景</h1>
+            </div>
+            <div class="sub-tabs" role="tablist" aria-label="全景子视图">
+              <button class="sub-tab is-active" data-atlas-tab="map" type="button" role="tab" aria-selected="true">五重转进星图</button>
+              <button class="sub-tab" data-atlas-tab="consciousness" type="button" role="tab" aria-selected="false">唯识八识转四智</button>
+              <button class="sub-tab" data-atlas-tab="diamond" type="button" role="tab" aria-selected="false">金刚三段论</button>
+            </div>
+          </div>
+
+          <div class="sub-panel is-active" id="atlas-map-panel">
+            <div class="split-layout">
+              <div class="canvas-frame">
+                <div class="canvas-caption">
+                  <span>点击任意义理节点，观照所破之执并可直达对应经典</span>
+                  <span class="mono-tag">缘起 → 性空 → 唯识 / 佛性 → 禅</span>
+                </div>
+                <div class="svg-stage">
+                  <svg id="atlas-svg" viewBox="0 0 730 390" role="img" aria-label="佛法修证五重转进图谱"></svg>
+                </div>
+                <div class="pillars-bar">
+                  <div class="pillar-item">
+                    <span class="pillar-label">三法印</span>
+                    <span class="pillar-val">诸行无常 · 诸法无我 · 涅槃寂静</span>
+                  </div>
+                  <div class="pillar-item">
+                    <span class="pillar-label">二谛圆融</span>
+                    <span class="pillar-val">世俗谛（缘起宛然）↔ 胜义谛（自性本空）</span>
+                  </div>
+                </div>
+              </div>
+              <aside id="atlas-inspector" class="inspector" aria-live="polite"></aside>
+            </div>
+          </div>
+
+          <div class="sub-panel" id="atlas-consciousness-panel">
+            <div id="consciousness-list" class="consciousness-grid"></div>
+          </div>
+
+          <div class="sub-panel" id="atlas-diamond-panel">
+            <div class="triad-stage">
+              <div id="diamond-selector" class="sutra-selector"></div>
+              <div id="diamond-flow" class="triad-flow"></div>
+              <blockquote id="diamond-meaning" class="detail-quote"></blockquote>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03 · 十牛图 -->
+        <section class="view" id="view-ox" data-view-panel="ox">
+          <div class="section-head">
+            <div>
+              <span class="kicker">03 · TEN OXHERDING PICTURES</span>
+              <h1 class="section-title">十牛图 · 修证轨迹</h1>
+            </div>
+            <p class="section-lead">廓庵师远禅师以「牛」喻本心，以「牧童」喻觉照。由寻觅、见性、牧牛调伏，直至人牛俱忘、入鄽垂手。</p>
+          </div>
+
+          <div class="split-layout split-ox">
+            <div class="canvas-frame">
+              <div class="canvas-caption">
+                <span>沿圆相点选，或以键盘 ← / → 渐次观照</span>
+                <span class="mono-tag" id="ox-phase-tag">迷 · 寻道之始</span>
+              </div>
+              <div class="svg-stage ox-stage">
+                <svg id="ox-svg" viewBox="0 0 380 380" role="img" aria-label="十牛图圆相"></svg>
+              </div>
+              <div class="ox-stepper">
+                <button id="ox-prev" class="ghost-btn" type="button">← 上一阶</button>
+                <span id="ox-progress" class="ox-progress">01 / 10</span>
+                <button id="ox-next" class="ghost-btn" type="button">下一阶 →</button>
+              </div>
+            </div>
+            <aside id="ox-inspector" class="inspector" aria-live="polite"></aside>
+          </div>
+        </section>
+
+        <!-- 04 · 五家法脉 -->
+        <section class="view" id="view-lineage" data-view-panel="lineage">
+          <div class="section-head">
+            <div>
+              <span class="kicker">04 · ZEN LINEAGE & FIVE HOUSES</span>
+              <h1 class="section-title">禅宗传灯与一花五叶</h1>
+            </div>
+            <p class="section-lead">从菩提达摩壁观到六祖顿悟，再到沩仰、临济、曹洞、云门、法眼五家。见地同归一源，唯接引家风各有奇绝。</p>
+          </div>
+
+          <div class="lineage-layout">
+            <div class="canvas-frame">
+              <div class="canvas-caption">
+                <span>点选任一祖师或宗派，自动溯源高亮其法脉传承</span>
+                <span class="mono-tag">达摩 → 六祖 → 一花五叶</span>
+              </div>
+              <div class="svg-stage lineage-stage">
+                <svg id="lineage-svg" viewBox="0 0 820 370" role="img" aria-label="禅宗传灯与一花五叶法脉"></svg>
+              </div>
+            </div>
+            <aside id="lineage-dossier" class="lineage-dossier" aria-live="polite"></aside>
+          </div>
+        </section>
+
+        <!-- 05 · 公案参究 -->
+        <section class="view" id="view-koans" data-view-panel="koans">
+          <div class="section-head">
+            <div>
+              <span class="kicker">05 · KOAN & GREAT DOUBT</span>
+              <h1 class="section-title">公案参究</h1>
+            </div>
+            <button id="koan-random" class="ghost-btn" type="button">随缘抽参 ↗</button>
+          </div>
+
+          <div id="koan-selector" class="koan-selector"></div>
+
+          <article id="koan-chamber" class="koan-chamber">
+            <div id="koan-source" class="koan-source"></div>
+            <h2 id="koan-title" class="koan-title"></h2>
+            <blockquote id="koan-quote" class="koan-case"></blockquote>
+
+            <div class="koan-actions">
+              <button id="koan-layer-one-toggle" class="ghost-btn" type="button">一 · 观其疑情</button>
+              <button id="koan-layer-two-toggle" class="ghost-btn" type="button">二 · 见透脱眼</button>
+            </div>
+
+            <div id="koan-layer-one" class="koan-layer">
+              <span class="detail-label">疑情所在</span>
+              <p id="koan-doubt" class="detail-text"></p>
+            </div>
+
+            <div id="koan-layer-two" class="koan-layer">
+              <span class="detail-label">透脱之眼（切忌死记作标准答案）</span>
+              <p id="koan-insight" class="detail-text"></p>
+            </div>
+
+            <div class="koan-reflection">
+              <label class="detail-label" for="koan-note">当下参究心得（自动同步至觉照手记）</label>
+              <textarea id="koan-note" rows="4" placeholder="先不急于寻找答案，写下此刻被这则公案撞出的疑情或念头…"></textarea>
+              <div class="koan-reflection-actions">
+                <div id="koan-book-link"></div>
+                <button id="koan-note-save" class="primary-btn" type="button">保存至觉照手记</button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- 06 · 觉照手记 -->
+        <section class="view" id="view-journal" data-view-panel="journal">
+          <div class="section-head">
+            <div>
+              <span class="kicker">06 · JOURNAL · LOCAL FIRST</span>
+              <h1 class="section-title">觉照手记</h1>
+            </div>
+            <div class="journal-actions-group">
+              <button id="journal-new" class="primary-btn" type="button">＋ 新建手记</button>
+              <button id="journal-export-all" class="ghost-btn" type="button">导出全部 .md</button>
+              <label class="ghost-btn" style="cursor: pointer;">
+                导入 .md
+                <input id="journal-import" type="file" accept=".md,text/markdown,text/plain" hidden />
+              </label>
+            </div>
+          </div>
+
+          <div class="journal-layout">
+            <aside class="journal-sidebar">
+              <input id="journal-search" class="journal-input" type="search" placeholder="搜索标题、正文、境缘…" />
+              <div class="filter-row" id="journal-filters" role="group" aria-label="类别筛选">
+                <button class="chip is-active" data-filter="all" type="button">全部</button>
+                <button class="chip" data-filter="free" type="button">自由手记</button>
+                <button class="chip" data-filter="koan" type="button">公案参究</button>
+                <button class="chip" data-filter="verse" type="button">经文批注</button>
+              </div>
+              <input id="journal-tag-filter" class="journal-input" type="search" placeholder="按标签筛选…" />
+              <div id="journal-list" class="journal-list"></div>
+            </aside>
+
+            <article class="journal-editor">
+              <div class="journal-editor-head">
+                <input id="journal-title" class="journal-title-input" type="text" placeholder="手记标题 · 例如：今日起嗔时的一念回光" />
+                <div class="journal-meta-grid">
+                  <div class="journal-field">
+                    <label for="journal-scene">境缘（触动自心之事、经句或公案）</label>
+                    <input id="journal-scene" class="journal-input" type="text" placeholder="何境、何事、何句…" />
+                  </div>
+                  <div class="journal-field">
+                    <label for="journal-tags">标签（逗号分隔）</label>
+                    <input id="journal-tags" class="journal-input" type="text" placeholder="如：般若, 日用, 观嗔" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="journal-field is-main">
+                <label for="journal-observation">一 · 如实观照（不加修饰与辩解，发生了什么）</label>
+                <textarea id="journal-observation" rows="6" placeholder="记录当下升起的念头、情绪起伏与身体反应…"></textarea>
+              </div>
+
+              <div class="journal-fields">
+                <div class="journal-field">
+                  <label for="journal-doubt">二 · 破执疑情（在抓取或抗拒什么）</label>
+                  <textarea id="journal-doubt" rows="4" placeholder="背后藏着怎样的我相、人相或拣择心？"></textarea>
+                </div>
+                <div class="journal-field">
+                  <label for="journal-light">三 · 一线微明（此刻真实松动之处）</label>
+                  <textarea id="journal-light" rows="4" placeholder="无需宏大辞藻，记下一两句平实透亮的体悟…"></textarea>
+                </div>
+              </div>
+
+              <div class="journal-actions">
+                <div class="journal-actions-group">
+                  <button id="journal-save" class="primary-btn" type="button">保存手记</button>
+                  <button id="journal-export-one" class="ghost-btn" type="button">导出此篇 .md</button>
+                </div>
+                <button id="journal-delete" class="ghost-btn" type="button">删除</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- 07 · 观息静室 -->
+        <section class="view" id="view-stillness" data-view-panel="stillness">
+          <div class="stillness-room">
+            <div class="stillness-head">
+              <span class="kicker">07 · CONTEMPLATIVE SILENCE</span>
+              <h1 class="section-title">观息静室</h1>
+              <p class="stillness-note">文字只是标月之指。此刻放下一切思量，只观一呼一吸，或静提一句疑情。</p>
+            </div>
+
+            <div class="breath-altar">
+              <div class="breath-enso-wrap" id="breath-enso-wrap">
+                <svg class="breath-svg" viewBox="0 0 280 280" aria-hidden="true">
+                  <circle class="breath-ring-outer" cx="140" cy="140" r="118"></circle>
+                  <circle class="breath-ring-progress" id="breath-ring-progress" cx="140" cy="140" r="118"></circle>
+                  <path class="breath-enso-stroke" d="M 140 42 A 98 98 0 1 1 76 66"></path>
+                </svg>
+                <div class="breath-center">
+                  <div id="breath-phase" class="breath-phase">静候</div>
+                  <div id="breath-timer" class="breath-timer">10:00</div>
+                </div>
+              </div>
+
+              <div class="huatou-box">
+                <span class="huatou-label">当下话头</span>
+                <p id="huatou-text" class="huatou-text"></p>
+                <button id="huatou-next" class="text-btn" type="button">换一则话头</button>
+              </div>
+
+              <div class="stillness-controls">
+                <div class="control-group">
+                  <span class="control-label">法门</span>
+                  <div class="pill-group" id="breath-mode-group">
+                    <button class="mini-pill is-active" data-mode="natural" type="button">自然 4·2·6</button>
+                    <button class="mini-pill" data-mode="deep" type="button">深缓 5·3·7</button>
+                    <button class="mini-pill" data-mode="mozhao" type="button">纯默照</button>
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <span class="control-label">时长</span>
+                  <div class="pill-group" id="duration-group">
+                    <button class="mini-pill" data-min="5" type="button">5 分</button>
+                    <button class="mini-pill is-active" data-min="10" type="button">10 分</button>
+                    <button class="mini-pill" data-min="15" type="button">15 分</button>
+                    <button class="mini-pill" data-min="30" type="button">30 分</button>
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <span class="control-label">引磬</span>
+                  <button id="chime-toggle" class="mini-pill is-active" type="button" aria-pressed="true">起止轻鸣</button>
+                </div>
+              </div>
+
+              <div class="stillness-actions">
+                <button id="stillness-toggle" class="primary-btn" type="button">开始静坐</button>
+                <button id="stillness-reset" class="ghost-btn" type="button">重置</button>
+                <button id="stillness-fullscreen" class="ghost-btn" type="button">沉浸全屏</button>
+              </div>
+              <div id="sit-count" class="mono-tag"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global Command Palette (Ctrl+K) -->
+  <div id="cmd-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="全局检索">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color: var(--fg-muted);">⌕</span>
+        <input id="cmd-input" class="cmd-input" type="search" placeholder="检索经文原典、译注、公案、法脉、十牛图与个人手记…" />
+        <kbd>ESC</kbd>
+      </div>
+      <div id="cmd-results" class="cmd-results" role="listbox"></div>
+    </div>
+  </div>
+
+  <!-- Typography & Source Han Serif Settings Popover -->
+  <div id="typo-popover" class="popover" role="dialog" aria-label="阅读排版与思源宋体设置">
+    <div class="popover-head">
+      <h3 class="popover-title">阅读排版 · 思源宋体</h3>
+      <button id="typo-close" class="icon-btn" type="button" aria-label="关闭排版面板">✕</button>
+    </div>
+
+    <div style="margin: 10px 0 6px;">
+      <span id="font-status-badge" class="font-status-badge">正在检测思源宋体…</span>
+    </div>
+
+    <div class="typo-row">
+      <div class="typo-row-head">
+        <label for="reader-size-control">正文字号</label>
+        <span id="typo-size-val" class="typo-val">19px</span>
+      </div>
+      <input id="reader-size-control" type="range" min="16" max="24" step="1" value="19" />
+    </div>
+
+    <div class="typo-row">
+      <div class="typo-row-head">
+        <label for="reader-leading-control">行距呼吸</label>
+        <span id="typo-leading-val" class="typo-val">2.05</span>
+      </div>
+      <input id="reader-leading-control" type="range" min="1.8" max="2.3" step="0.05" value="2.05" />
+    </div>
+
+    <div class="typo-row">
+      <div class="typo-row-head">
+        <label for="reader-measure-control">单栏行宽</label>
+        <span id="typo-measure-val" class="typo-val">680px</span>
+      </div>
+      <input id="reader-measure-control" type="range" min="560" max="820" step="20" value="680" />
+    </div>
+
+    <div class="typo-guide">
+      <strong>Windows 离线极佳质感建议</strong>：本应用内置网络思源宋体加载；若在完全无网环境下阅读，可于 Adobe / GitHub 下载免费开源的 <code>Source Han Serif SC</code>（思源宋体）安装至 Windows 字体库，即可零延时离线呈现。
+    </div>
+  </div>
+
+  <button class="zen-exit-btn" id="zen-exit" type="button">退出沉浸 · ESC</button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app/data/library.js"></script>
+  <script src="./app/data/atlas.js"></script>
+  <script src="./app/font-loader.js"></script>
+  <script src="./app/app.js"></script>
+</body>
+</html>
