@@ -10,7 +10,7 @@
 - **目标**：一座用于个人长期研习禅宗与大乘佛法至高觉悟的 **Windows 桌面级交互阅读与观照空间**。
 - **设计风格**：宋韵极简 × 瑞士网格 × 博物馆典籍级排版。
   - **字体灵魂**：以**思源宋体（Source Han Serif SC / Noto Serif SC）**为核心衬线体，讲求字距、行距、标点挤压与纸墨留白。
-  - **三款低饱和主题**：`ink`（玄墨 · 默认暖炭黑）、`xuan`（宣纸 · 温润古纸白）、`celadon`（松烟青 · 汝窑青灰釉韵）。严禁高饱和霓虹配色或花哨玻璃特效。
+  - **三款低饱和主题**：`ink`（玄墨 · 暖炭黑）、`xuan`（宣纸 · 温润古纸白）、`celadon`（松烟青 · 汝窑青灰釉韵）。未手动切换前随系统浅/深色自动匹配（`prefers-color-scheme: light` 对应 `xuan`，其余为 `ink`），手动选择后持久化于 `bodhi-theme`。严禁高饱和霓虹配色或花哨玻璃特效。
   - **内容格调**：忠实于原始佛法、般若中观、瑜伽唯识、如来藏与东土禅宗原典，行文克制、精准、有哲学深度，**严禁流于浅薄心灵鸡汤**。
 
 ---
@@ -23,6 +23,8 @@ bodhi/
 ├── README.md               # 用户使用手册与 Windows 启动指南
 ├── index.html              # 主应用入口（7 大视图容器与浮层结构）
 ├── manifest.json           # PWA 应用清单（Edge 安装桌面应用支持）
+├── skills-lock.json        # 项目级 Agent 前端设计技能锁文件（非运行时依赖）
+├── .agents/                # 项目级 Agent 技能目录（gemini-frontend-design/SKILL.md，非运行时依赖）
 ├── 启动菩提.vbs            # Windows 静默独立窗口启动器（必须保持纯 ASCII）
 ├── 启动菩提.bat            # Windows 批处理启动器（支持 --server 启动本地服务）
 ├── assets/
@@ -83,13 +85,15 @@ bodhi/
 ### 4.3 DOM 状态与本地存储键
 - **主题属性**：`<html data-theme="ink | xuan | celadon">`
 - **排版 CSS 变量**：`--reader-size`、`--reader-leading`、`--reader-measure`
-- **关键状态类**：`.is-active`、`.is-collapsed`、`.is-pure`、`.is-vertical`、`.is-selected`、`.is-noted`、`.is-open`、`body.is-zen-fullscreen`、`.is-visible`
+- **关键状态类**：`.is-active`、`.is-collapsed`、`.is-pure`、`.is-vertical`、`.is-selected`、`.is-noted`、`.is-open`、`body.is-zen-fullscreen`、`.is-visible`、`html.is-theme-switching`、`html.is-theme-fallback`、`html.is-zen-transitioning`、`aside.sidebar.is-leaving`、`.is-armed`
 - **`localStorage` 键名**（扩充功能时请勿破坏既有用户数据格式）：
   - `bodhi-journal-v1`（统一存放手记 `entries` 与收藏 `bookmarks`）
   - `bodhi-theme`
   - `bodhi-last-reading`
   - `bodhi-sit-count`
   - `bodhi-reader-size` / `bodhi-reader-leading` / `bodhi-reader-measure`
+  - `bodhi-book-positions` / `bodhi-reader-mode` / `bodhi-last-view` / `bodhi-sidebar-collapsed` / `bodhi-sit-prefs` / `bodhi-ui-state`
+- **手记持久化与导出契约**：写入 `bodhi-journal-v1` 统一经由事务性的 `commitJournal()`（存储写入失败时不得修改内存状态或清除 `dirty` 标记）；Markdown 导出/导入采用无损 `<!-- bodhi:entry:v2 ... -->` 与 `<!-- bodhi:field:*:start/end -->` 标记（转义正文中的字面量标记），同时保留围栏代码块感知的旧版 Markdown 导入兼容。
 
 ---
 
@@ -97,7 +101,7 @@ bodhi/
 
 - 新增或修改原典全文（尤其是经偈、祖师铭文）时，**必须逐字核对权威传世定本，不得臆造、漏字或擅自改写原典字句**。
 - 扩充新经典时，若正文为整齐偈颂或短经可设 `supportsVertical: true`；若为长段散文对话体应设 `supportsVertical: false`，并确保 `app/app.js` 无需修改即可通过契约自动渲染。
-- 修改交互逻辑时，需保持 `Ctrl+K` 全局检索、`1–7` 视图快捷键、键盘 `←/→` 步进十牛图以及无障碍属性（`aria-pressed`、`aria-current`、`role`）完整可用。
+- 修改交互逻辑时，需保持快捷键（`Ctrl+K` 全局检索、`Ctrl+S` 立即本地保存、`1–7` 视图切换、藏经精读 `↑/↓` 与 `j/k`、十牛图/公案 `←/→`、观息静室 `Space` 起止、`Esc` 关闭浮层/抽屉或退出全屏）与无障碍契约（IME `isComposing` 守卫、检索弹窗开启时背景 `.app-shell` 设 `inert`、各 `radiogroup`/`tablist` 的 roving `tabindex` 与方向键/`Home`/`End` 导航、视图 `<h1 class="section-title" tabindex="-1">` 焦点迁移、`aria-pressed`、`aria-current`）完整可用。
 
 ---
 
