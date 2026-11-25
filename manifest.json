@@ -4,8 +4,8 @@
   "description": "本地禅学阅读与觉照空间",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0e0e0d",
-  "theme_color": "#0e0e0d",
+  "background_color": "#11110f",
+  "theme_color": "#11110f",
   "icons": [
     {
       "src": "./assets/icon.svg",
